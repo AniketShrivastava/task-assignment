@@ -2,10 +2,13 @@
 
   <mat-card-title>Add User</mat-card-title>
 
-  <!-- Form -->
-  <form [formGroup]="currentUser" style="display:flex;gap:12px;align-items:center">
-    
-    <mat-form-field appearance="outline"  class="w-full">
+  <!-- Add User Form -->
+  <form
+    [formGroup]="currentUser"
+    (ngSubmit)="addUser()"
+    style="display:flex;gap:12px;align-items:center"
+  >
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" placeholder="Enter name" />
       <mat-error *ngIf="currentUser.get('name')?.invalid">
@@ -16,17 +19,22 @@
     <button
       mat-raised-button
       color="primary"
-      (click)="addUser()"
-      [disabled]="currentUser.invalid">
+      type="submit"
+      [disabled]="currentUser.invalid"
+    >
       Add
     </button>
-
   </form>
 
   <br />
 
   <!-- Table -->
-  <table mat-table [dataSource]="users.controls" class="mat-elevation-z2" width="100%">
+  <table
+    mat-table
+    [dataSource]="users.controls"
+    class="mat-elevation-z2"
+    width="100%"
+  >
 
     <!-- Index -->
     <ng-container matColumnDef="index">
@@ -37,7 +45,7 @@
     </ng-container>
 
     <!-- Name -->
-    <ng-container matColumnDef="name" >
+    <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
       <td mat-cell *matCellDef="let row">
         {{ row.value.name }}
@@ -56,7 +64,6 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
   </table>
 
   <p *ngIf="users.length === 0" style="text-align:center;margin-top:10px">

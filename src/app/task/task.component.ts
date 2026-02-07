@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -12,7 +12,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTable, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 
@@ -29,9 +29,11 @@ import { MatCardModule } from '@angular/material/card';
     MatIconModule,
     MatCardModule
   ],
-  templateUrl: './task.component.html',
+  templateUrl: './task.component.html'
 })
 export class TaskComponent implements OnInit {
+
+  @ViewChild(MatTable) table!: MatTable<any>;
 
   userForm!: FormGroup;
   displayedColumns: string[] = ['index', 'name', 'action'];
@@ -55,14 +57,21 @@ export class TaskComponent implements OnInit {
     return this.userForm.get('currentUser') as FormGroup;
   }
 
-  addUser() {
-    if (this.currentUser.valid) {
-      this.users.push(this.fb.group(this.currentUser.value));
-      this.currentUser.reset();
-    }
+  addUser(): void {
+    if (this.currentUser.invalid) return;
+
+    this.users.push(
+      this.fb.group({
+        name: this.currentUser.value.name
+      })
+    );
+
+    this.table.renderRows(); 
+    this.currentUser.reset();
   }
 
-  deleteUser(index: number) {
+  deleteUser(index: number): void {
     this.users.removeAt(index);
+    this.table.renderRows(); 
   }
 }
